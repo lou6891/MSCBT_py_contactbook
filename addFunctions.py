@@ -42,12 +42,17 @@ def AddEmail():
     else:
         return None
 
-def specificSearchProgram(target, contactsLsit):
+def specificSearchProgram(target,searchType,contactsLsit):
+    tester = None
 
     if(len(contactsLsit) > 0):
         for contact in contactsLsit:
-            tester = contact.name.strip() + contact.surname.strip()
-            if(target == tester):
+            if searchType == "name":
+                tester = contact.name.strip() + contact.surname.strip()
+            elif searchType == "phone":
+                tester = contact.phoneNumber.strip()
+
+            if(target == tester.lower()):
                 return contact
 
     else:
@@ -56,15 +61,26 @@ def specificSearchProgram(target, contactsLsit):
 def genericaSearchProgram(target, searchType,contactsLsit):
 
     returnArr = []
+    tester = None
 
     if(len(contactsLsit) > 0):
         for contact in contactsLsit:
-            tester = contact.name.strip() if searchType == "name" else contact.surname.strip()
+            if searchType == "name":
+                tester = contact.name.strip()
+            elif searchType == "surname":
+                tester = contact.surname.strip()
+            elif searchType == "countryCode":
+                ind = contact.phoneNumber.strip().find("|")
+                tester = contact.phoneNumber.strip()[0:ind]
+            elif searchType == "number":
+                ind = contact.phoneNumber.strip().find("|") +1
+                tester = contact.phoneNumber.strip()[ind :]
             
-            if(target == tester):
+            print(tester)
+            if(target == tester.lower()):
                 returnArr.append(contact) 
         
-        return returnArr
+        return returnArr if len(returnArr) > 0 else None
 
     else:
         return None

@@ -1,11 +1,10 @@
-from contactbook import ContactBook
 import tkinter as tk
+
+from contactbook import ContactBook
 
 
 def main():
     contactBook = ContactBook()
-
-    #tkinterPages.startPage()
     
     '''
     root = tk.Tk()
@@ -16,11 +15,10 @@ def main():
     '''
 
     root=tk.Tk()
-    root.geometry("500x500")
+    root.geometry("500x600")
 
     frame=tk.Frame(root)
     frame.place(relx=0.2,rely=0.3,relheight=0.6,relwidth=0.6)
-
 
 
     def Add_Collection_page():
@@ -47,6 +45,9 @@ def main():
         # This part is the one that hides or shows the phonefields, 
         # We call it in phoneNumberYes, if we want to show the components
         # Else in phoneNumberNo we hide it
+        def test():
+            print("Hello")
+
         phoneNumberCountryCodeEntry = tk.Entry(frame)
         phoneNumberEntry = tk.Entry(frame)
         phoneNumberLabel=tk.Label(frame,text='Phone\nNumber')
@@ -85,13 +86,18 @@ def main():
             emailGet = emailEntry.get()
             phoneNumberGet = phoneNumberCountryCodeEntry.get() + "|" + phoneNumberEntry.get()
 
-            addContactResult = contactBook.add_contact(nameGet, surnameGet, emailGet, phoneNumberGet)
-            
+            # Check that the phone number is aacutally a number
+            addContactResult = None
+            if (phoneNumberCountryCodeEntry.get().isnumeric() and phoneNumberEntry.get().isnumeric()):
+                addContactResult = contactBook.add_contact(nameGet, surnameGet, emailGet, phoneNumberGet)
+            else : 
+                addContactResult = "Both the country code and the number\nmust be onyl numbers"
+
             label1 = tk.Label(root, text=addContactResult)
             label1.place(relx=0.3,rely=0.3)
 
             label1.after(2000, label1.destroy)
-
+            
 
     def Remove_Contact_Page():
         # Clear the frame from any widgets
@@ -131,7 +137,7 @@ def main():
                     removeContactResult = contactBook.remove_contact(nameGet,surnameGet)
                     
                     # Display the contact removed
-                    t = tk.Text(frame)
+                    t = tk.Text(frame, wrap='word')
                     t.insert(tk.END, str(removeContactResult))
                     t.place(relx=0.01, rely=0.1)
                     t.after(2000, t.destroy)
@@ -144,8 +150,126 @@ def main():
             else :
                 label1 = tk.Label(root, text="Please enter name and surname")
                 label1.place(relx=0.3,rely=0.3)
-                label1.after(2000, label1.destroy)         
+                label1.after(2000, label1.destroy)   
 
+    def search_contact_page():
+        # Clear the frame from any widgets
+        for widget in frame.winfo_children():
+            widget.destroy()
+
+        # Text that pops up at the end, declared here cause it's used multiple tiems
+        t = tk.Text(frame, wrap='word')
+
+        def search_name_page():
+            # Text box that will display the output, and hide it if it's present
+            # Just a small script to avoid showing the text field while trying to search another name
+            #for widget in frame.winfo_children():
+            #    if(str(widget)[0 : 13] == ".!frame.!text"):
+            #        widget.pack_forget()
+            t = tk.Text(frame, wrap='word')
+
+            # Here add name and surname input field, do the search foe the one he looks for
+            # avoid putting genereric and speficic search
+            genericLabel=tk.Label(frame,text='You can search by name, surname,\nor both to be more precise ', name='toBeAnnihilated1')
+            genericLabel.place(relx=0.1, rely=0.2)
+
+            nameEntry = tk.Entry(frame, name='toBeAnnihilated2')
+            nameEntry.place(relx=0.3,rely=0.3)
+            nameLabel=tk.Label(frame,text='Name', name='toBeAnnihilated3')
+            nameLabel.place(relx=0.1,rely=0.3)
+
+            surnameEntry = tk.Entry(frame, name='toBeAnnihilated4')
+            surnameEntry.place(relx=0.3,rely=0.4)
+            surnameLabel=tk.Label(frame,text='Surname', name='toBeAnnihilated5')
+            surnameLabel.place(relx=0.008,rely=0.4)
+
+
+            SearchButton = tk.Button(frame, text= "Search!", name='toBeAnnihilated6', width=15, command= lambda: search_name_function(nameEntry = nameEntry,surnameEntry = surnameEntry))
+            SearchButton.place(relx=0.3, rely=0.6)     
+
+
+            def search_name_function(nameEntry, surnameEntry):
+
+                # Get the values
+                nameGet = nameEntry.get()
+                surnameGet = surnameEntry.get()
+
+                # Call the method that does the search
+                FoundContacts = contactBook.search_contact_by_name(nameGet, surnameGet)
+
+                # Hide the search elements
+                for widget in frame.winfo_children():
+                    if(str(widget)[0 : 23] == ".!frame.toBeAnnihilated"):
+                        widget.destroy()
+                
+                # Show the result fromt he search, if we have a iterate through it, else  show the string
+                if type (FoundContacts) == list:
+                    for c in FoundContacts:
+                        t.insert(tk.END, str(vars(c)) + "\n\n")
+                else : 
+                    t.insert(tk.END, str(FoundContacts) + "\n\n")
+                
+                # Show the result
+                t.pack()
+
+        def search_phone_page():
+            
+            t = tk.Text(frame, wrap='word')
+            # Here add name and surname input field, do the search foe the one he looks for
+            # avoid putting genereric and speficic search
+            genericLabel=tk.Label(frame,text='You can search by country code, number,\nor both to be more precise ', name='toBeAnnihilated1')
+            genericLabel.place(relx=0.1, rely=0.2)
+           
+
+            phoneNumberCountryCodeEntry = tk.Entry(frame, name='toBeAnnihilated2')
+            phoneNumberCountryCodeEntry.place(relx=0.3,rely=0.3)
+
+            phoneCountryCondeLabel=tk.Label(frame,text='Country\nCode', name='toBeAnnihilated3')
+            phoneCountryCondeLabel.place(relx=0.05,rely=0.3)
+
+            phoneNumberEntry = tk.Entry(frame, name='toBeAnnihilated4')
+            phoneNumberEntry.place(relx=0.3,rely=0.4)
+
+            phoneNumberLabel=tk.Label(frame,text='Phone\nNumber', name='toBeAnnihilated5')
+            phoneNumberLabel.place(relx=0.05,rely=0.4)
+
+            SearchButton = tk.Button(frame, text= "Search!", name='toBeAnnihilated6', width=15, command= lambda: search_phone_function(phoneNumberCountryCodeEntry = phoneNumberCountryCodeEntry, phoneNumberEntry = phoneNumberEntry))
+            SearchButton.place(relx=0.3, rely=0.6)     
+
+
+            def search_phone_function(phoneNumberCountryCodeEntry, phoneNumberEntry):
+
+                # Get the values
+                phoneNumberCountryCodeGet = phoneNumberCountryCodeEntry.get()
+                phoneNumberGet = phoneNumberEntry.get()
+
+                # Call the method that does the search
+                FoundContacts = contactBook.search_contact_by_phone(countryCode = phoneNumberCountryCodeGet, number= phoneNumberGet)
+
+                # Hide the search elements
+                for widget in frame.winfo_children():
+                    if(str(widget)[0 : 23] == ".!frame.toBeAnnihilated"):
+                        widget.destroy()
+                
+                # Show the result fromt he search, if we have a iterate through it, else  show the string
+                if type (FoundContacts) == list:
+                    for c in FoundContacts:
+                        t.insert(tk.END, str(vars(c)) + "\n\n")
+                else : 
+                    t.insert(tk.END, str(FoundContacts) + "\n\n")
+                
+                # Show the result
+                t.pack()
+
+
+
+        # Buttons that let you decide what type of search to do
+        phoneSearchButton = tk.Button(frame, text= "Search by phone", width=15, command=search_phone_page )
+        phoneSearchButton.place(relx=0.01, rely=0.05)
+
+        nameSearchButton = tk.Button(frame, text= "Search by Name", width=15, command=search_name_page)
+        nameSearchButton.place(relx=0.55, rely=0.05)     
+ 
 
 
     def See_all_Contats_Page():
@@ -155,7 +279,7 @@ def main():
         
         contacts = contactBook.display_contactbook()
 
-        t = tk.Text(frame)
+        t = tk.Text(frame,  wrap='word')
         t.place(relx=0.35)
         
         if contacts:
@@ -213,12 +337,15 @@ def main():
 
     AddContactButton = tk.Button(root, text='Add Contact', width=25, command=Add_Collection_page)
     RemoveContactButton = tk.Button(root, text='Remove Contact', width=25,command=Remove_Contact_Page)
+    SearchContactButton = tk.Button(root, text='Search Contact', width=25,command=search_contact_page)
+
     SeeAllContactButton = tk.Button(root, text='See all Contacts', width=25,command=See_all_Contats_Page)
     importExportContctsButton = tk.Button(root, text='Import / Export Contacts', width=25,command=import_export_contact_page)
     StopButton = tk.Button(root, text='Stop', width=25, command=root.destroy)
     
     AddContactButton.pack()
     RemoveContactButton.pack()
+    SearchContactButton.pack()
     SeeAllContactButton.pack()
     importExportContctsButton.pack()
     StopButton.pack()

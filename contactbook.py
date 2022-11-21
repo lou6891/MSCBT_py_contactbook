@@ -9,7 +9,7 @@ class ContactBook:
     def __init__ (self):
         self.contacts = []
         self.nameCSVfile = "contactBook_backup.csv"
-        self.contactField =[ "name" , "surname", "nickname", "phoneNumber" , "email" ]
+        self.contactField =[ "name" , "surname", "phoneNumber" , "email" ]
         pass
     
     def add_contact(self, name, surname, email=None, phoneNumber= None):
@@ -32,10 +32,9 @@ class ContactBook:
             if (len(tester[1]) < 1):
                 return "please enter a valid phone number"
         
-        print("phone number" , phoneNumber)
 
         # Check if the contact already exsits, if it does tell the user
-        isExistant = addFunctions.specificSearchProgram(name.strip() + surname.strip(), self.contacts)
+        isExistant = addFunctions.specificSearchProgram(name.strip().lower() + surname.strip().lower(), "name" ,self.contacts)
         # If it exists return
         if(isExistant != None): 
             return ("The contact already exists")
@@ -80,7 +79,7 @@ class ContactBook:
             with open(self.nameCSVfile, "r") as file:
                 # Loop though the row to get the single contats
                 for index, row in enumerate(file):
-                    print(index, row)
+
                     # Skip the first row since it's a header
                     if (index == 0):
                         continue
@@ -90,9 +89,8 @@ class ContactBook:
                         # Create a new contact and add it to the contactbook
                         new_contact = Contact(name = row[0], 
                                                 surname=row[1], 
-                                                nickname=row[2] if len(row[2]) > 0 else None, 
-                                                phoneNumber=row[3] if len(row[3]) > 0 else None,
-                                                email=row[4] if len(row[4]) > 0 else None,
+                                                phoneNumber=row[2] if len(row[2]) > 0 else None,
+                                                email=row[3] if len(row[3]) > 0 else None,
                                                 )
                         self.contacts.append(new_contact)
 
@@ -124,8 +122,57 @@ class ContactBook:
         except Exception as error:
             print(error)
             return False
-        
 
+    def search_contact_by_name(self, nameSearched, surnameSearched):
+        
+        # Data cleaning and transormation for capitl letter tht might interfer
+        nameSearched = nameSearched.strip().lower()
+        surnameSearched = surnameSearched.strip().lower()
+
+        if len(nameSearched) > 0 and len(surnameSearched) > 0:
+            
+            isExistant = addFunctions.specificSearchProgram(nameSearched + surnameSearched, "name" ,self.contacts)
+            return vars(isExistant) if isExistant != None else "No contact Found"
+
+        elif len(nameSearched) > 0 and len(surnameSearched) == 0:
+            
+            isExistant = addFunctions.genericaSearchProgram(nameSearched, "name" , self.contacts)
+            return isExistant if isExistant != None else "No contact Found"
+
+        elif len(nameSearched) == 0 and len(surnameSearched) > 0:
+            
+            isExistant = addFunctions.genericaSearchProgram(surnameSearched, "surname" , self.contacts)
+            return isExistant if isExistant != None else "No contact Found"
+
+        else:
+            return "Something went wrong!\nCheck that the entries are valid"
+
+    def search_contact_by_phone(self, countryCode, number):
+            
+        # Data cleaning and transormation for capitl letter tht might interfer
+        countryCode = countryCode.strip().lower()
+        number = number.strip().lower()
+
+        if len(countryCode) > 0 and len(number) > 0:
+            
+            isExistant = addFunctions.specificSearchProgram(countryCode + "|" + number, "phone", self.contacts)
+            return vars(isExistant) if isExistant != None else "No contact Found"
+
+        elif len(countryCode) > 0 and len(number) == 0:
+            
+            isExistant = addFunctions.genericaSearchProgram(countryCode, "countryCode" , self.contacts)
+            return isExistant if isExistant != None else "No contact Found"
+
+        elif len(countryCode) == 0 and len(number) > 0:
+            
+            isExistant = addFunctions.genericaSearchProgram(number, "number" , self.contacts)
+            return isExistant if isExistant != None else "No contact Found"
+
+        else:
+            return "Something went wrong!\nCheck that the entries are valid"
+
+         
+                 
             
 
             
