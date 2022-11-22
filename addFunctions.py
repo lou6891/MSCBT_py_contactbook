@@ -1,57 +1,24 @@
 
-
-def AddPhoneNumber():
-    '''
-    This program is the one that takes care of the imput of the phone number
-
-    Output
-    '''
-
-    pn = (input("Do you want to add a phone number?  (yes / y / to skip press enter): "))
-        
-    if ( len(pn) and pn[0].lower() == "y"):
-        countryCode = input("Enter the country code of the phone number: ")
-        if len(countryCode) < 1 : print("You must enter a valid country code"); return None;
-        
-        number = input("Enter the actual phone number: ")
-        if len(countryCode) < 1 : print("You must enter a valid country code"); return None;
-        
-        return "+" + countryCode + number
-    
-    else:
-        return None
-
-def AddEmail():
-    '''
-    This program is the one that takes care of the imput of the phone number
-
-    Output
-    '''
-
-    em = (input("Do you want to add a phone number?  (yes / y / to skip press enter): "))
-        
-    if ( len(em) and em[0].lower() == "y"):
-        countryCode = input("Enter the country code of the phone number: ")
-        if len(countryCode) < 1 : print("You must enter a valid country code"); return False;
-        
-        number = input("Enter the actual phone number: ")
-        if len(countryCode) < 1 : print("You must enter a valid country code"); return False;
-        
-        return "+" + countryCode + number
-    
-    else:
-        return None
-
 def specificSearchProgram(target,searchType,contactsLsit):
-    tester = None
+    '''
+    Given a target (name-surname or countrycode-number)
+    and a type of search + the contacts in the contact book
+    
+    Output
+    -> return the target contact
+    - > None in case of error
 
+    '''
+    tester = None
     if(len(contactsLsit) > 0):
         for contact in contactsLsit:
             if searchType == "name":
+                # Strip anything to avoid having anything other than the input characters 
                 tester = contact.name.strip() + contact.surname.strip()
             elif searchType == "phone":
                 tester = contact.phoneNumber.strip()
 
+            # Check with lower case letter, to have a precsesearch, no mausc weird stuff
             if(target == tester.lower()):
                 return contact
 
@@ -59,7 +26,17 @@ def specificSearchProgram(target,searchType,contactsLsit):
         return None
 
 def genericaSearchProgram(target, searchType,contactsLsit):
+    '''
+    Given a target (name-surname or countrycode-number)
+    and a type of search + the contacts in the contact book
 
+    The different if are to search only a specific elements, 
+    that's why this may return multiple contacts
+    
+    Output
+    -> return the array with the contacts
+    - > None in case of error
+    '''
     returnArr = []
     tester = None
 
@@ -70,26 +47,17 @@ def genericaSearchProgram(target, searchType,contactsLsit):
             elif searchType == "surname":
                 tester = contact.surname.strip()
             elif searchType == "countryCode":
+                # This part is just because the country code and the phone number are divided by |
                 ind = contact.phoneNumber.strip().find("|")
                 tester = contact.phoneNumber.strip()[0:ind]
             elif searchType == "number":
                 ind = contact.phoneNumber.strip().find("|") +1
                 tester = contact.phoneNumber.strip()[ind :]
             
-            print(tester)
             if(target == tester.lower()):
-                returnArr.append(contact) 
+                returnArr.append(contact)
         
         return returnArr if len(returnArr) > 0 else None
 
     else:
         return None
-
-            
-
-
-
-
-
-
-    

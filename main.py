@@ -1,371 +1,317 @@
 import tkinter as tk
-
+from pagesFunctions import *
 from contactbook import ContactBook
 
 
 def main():
-    contactBook = ContactBook()
-    
-    '''
-    root = tk.Tk()
-    main = MainView(root, contactBook)
-    main.pack(side="top", fill="both", expand=True)
-    root.wm_geometry("400x400")
-    root.mainloop()
-    '''
-
-    root=tk.Tk()
-    root.geometry("500x600")
-
-    frame=tk.Frame(root)
-    frame.place(relx=0.2,rely=0.3,relheight=0.6,relwidth=0.6)
-
-
-    def Add_Collection_page():
-        # Clear the frame from any widgets
-        for widget in frame.winfo_children():
-            widget.destroy()
+    try:
+        # Create the contactBook
+        contactBook = ContactBook()
         
-        
-        nameEntry = tk.Entry(frame)
-        nameEntry.place(relx=0.3,rely=0.15)
-        nameLabel=tk.Label(frame,text='Name')
-        nameLabel.place(relx=0.1,rely=0.15)
+        # Create the frame where visual elements are created and positioned
+        root=tk.Tk()
+        # Set the size of the window
+        root.geometry("500x600")
 
-        surnameEntry = tk.Entry(frame)
-        surnameEntry.place(relx=0.3,rely=0.25)
-        surnameLabel=tk.Label(frame,text='Surname')
-        surnameLabel.place(relx=0.008,rely=0.25)
+        # Create a second frame that will hold different graphical elements
+        frame=tk.Frame(root)
+        #Psoition of the second frame
+        frame.place(relx=0.2,rely=0.3,relheight=0.6,relwidth=0.6)
 
-        emailEntry = tk.Entry(frame)
-        emailEntry.place(relx=0.3,rely=0.35)
-        emailLabel=tk.Label(frame,text='Email')
-        emailLabel.place(relx=0.1,rely=0.35)
 
-        # This part is the one that hides or shows the phonefields, 
-        # We call it in phoneNumberYes, if we want to show the components
-        # Else in phoneNumberNo we hide it
-        def test():
-            print("Hello")
-
-        phoneNumberCountryCodeEntry = tk.Entry(frame)
-        phoneNumberEntry = tk.Entry(frame)
-        phoneNumberLabel=tk.Label(frame,text='Phone\nNumber')
-        phoneCountryCondeLabel=tk.Label(frame,text='Country\nCode')
-
-        def setPhoneField (value): 
-            if value:
-                phoneNumberCountryCodeEntry.place(relx=0.3,rely=0.65)
-                phoneCountryCondeLabel.place(relx=0.05,rely=0.65)
-
-                phoneNumberEntry.place(relx=0.3,rely=0.75)
-                phoneNumberLabel.place(relx=0.05,rely=0.75)
-
-            else:
-                phoneNumberCountryCodeEntry.place_forget()
-                phoneCountryCondeLabel.place_forget()
-                phoneNumberEntry.place_forget()
-                phoneNumberLabel.place_forget()
+        def Add_Contact_page():
+            '''
+            This function and all the nested functions manage 
+            the page that enable the user to ad contacts to the book
+            '''
             
-
-        phoneNumberYes = tk.Radiobutton(frame, text='Yes', value=0, command = lambda : setPhoneField(True))
-        phoneNumberNo = tk.Radiobutton(frame, text='No',value=1, command = lambda : setPhoneField(False) )
-        phoneNumberYes.place(relx=0.3,rely=0.45)
-        phoneNumberNo.place(relx=0.5,rely=0.45)
-        
-
-        phoneLabel=tk.Label(frame,text='Phone\nNumber')
-        phoneLabel.place(relx=0.05,rely=0.45)
-        
-        confirmButton = tk.Button(frame, text='Add Contact!', width=25, command= lambda:  add_contact_in_book(nameEntry, surnameEntry, emailEntry, phoneNumberCountryCodeEntry, phoneNumberEntry))
-        confirmButton.place(relx=0.2,rely=0.9)
-
-        def add_contact_in_book(nameEntry, surnameEntry, emailEntry,phoneNumberCountryCodeEntry,  phoneNumberEntry):  
-            nameGet = nameEntry.get()
-            surnameGet = surnameEntry.get()
-            emailGet = emailEntry.get()
-            phoneNumberGet = phoneNumberCountryCodeEntry.get() + "|" + phoneNumberEntry.get()
-
-            # Check that the phone number is aacutally a number
-            addContactResult = None
-            if (phoneNumberCountryCodeEntry.get().isnumeric() and phoneNumberEntry.get().isnumeric()):
-                addContactResult = contactBook.add_contact(nameGet, surnameGet, emailGet, phoneNumberGet)
-            else : 
-                addContactResult = "Both the country code and the number\nmust be onyl numbers"
-
-            label1 = tk.Label(root, text=addContactResult)
-            label1.place(relx=0.3,rely=0.3)
-
-            label1.after(2000, label1.destroy)
+            # Clear the frame from any widgets
+            for widget in frame.winfo_children():
+                widget.destroy()
             
+            # Entry and label for name
+            nameEntry = tk.Entry(frame)
+            nameEntry.place(relx=0.3,rely=0.15)
+            nameLabel=tk.Label(frame,text='Name')
+            nameLabel.place(relx=0.1,rely=0.15)
 
-    def Remove_Contact_Page():
-        # Clear the frame from any widgets
-        for widget in frame.winfo_children():
-            widget.destroy()
+            # Entry and label for surname   
+            surnameEntry = tk.Entry(frame)
+            surnameEntry.place(relx=0.3,rely=0.25)
+            surnameLabel=tk.Label(frame,text='Surname')
+            surnameLabel.place(relx=0.008,rely=0.25)
 
-        # Warning to avoid accidental deletions
-        confirmButtonWarning = False
+            # Entry and label for email
+            emailEntry = tk.Entry(frame)
+            emailEntry.place(relx=0.3,rely=0.35)
+            emailLabel=tk.Label(frame,text='Email')
+            emailLabel.place(relx=0.1,rely=0.35)
 
-        nameEntry = tk.Entry(frame)
-        nameEntry.place(relx=0.3,rely=0.15)
-        nameLabel=tk.Label(frame,text='Name')
-        nameLabel.place(relx=0.1,rely=0.15)
+            # This part is the one that hides or shows the phonefields, 
+            # We call it in phoneNumberYes, if we want to show the components
+            # Else in phoneNumberNo we hide it
+            phoneNumberCountryCodeEntry = tk.Entry(frame)
+            phoneNumberEntry = tk.Entry(frame)
+            phoneNumberLabel=tk.Label(frame,text='Phone\nNumber')
+            phoneCountryCondeLabel=tk.Label(frame,text='Country\nCode')
 
-        surnameEntry = tk.Entry(frame)
-        surnameEntry.place(relx=0.3,rely=0.25)
-        surnameLabel=tk.Label(frame,text='Surname')
-        surnameLabel.place(relx=0.008,rely=0.25)
-
-        confirmButton = tk.Button(frame, text= "Delete Contact", width=25, command= lambda:  remove_contact_from_book(nameEntry, surnameEntry))
-        confirmButton.place(relx=0.15, rely=0.45)
-
-        def remove_contact_from_book(nameEntry, surnameEntry):
-            # THis enables us to use the confirmButton variable
-            nonlocal confirmButtonWarning
-
-            nameGet = nameEntry.get()
-            surnameGet = surnameEntry.get()
-
-            if (nameGet and surnameGet):
-
-                if not confirmButtonWarning:
-                    confirmButtonWarning = True
-                    confirmButton.config(text="I want to delete it!")
                 
-                else:
-                    removeContactResult = contactBook.remove_contact(nameGet,surnameGet)
-                    
-                    # Display the contact removed
-                    t = tk.Text(frame, wrap='word')
-                    t.insert(tk.END, str(removeContactResult))
-                    t.place(relx=0.01, rely=0.1)
-                    t.after(2000, t.destroy)
+            # The two circle buttons that manage the phone entry
+            radioSelectorValue = tk.IntVar()
+            phoneNumberYes = tk.Radiobutton(frame, text='Yes', value = 1 ,variable=radioSelectorValue, command = lambda : setPhoneField(True ,phoneNumberCountryCodeEntry , phoneCountryCondeLabel, phoneNumberEntry, phoneNumberLabel))
+            phoneNumberNo = tk.Radiobutton(frame, text='No',value = 0, variable=radioSelectorValue, command = lambda : setPhoneField(False, phoneNumberCountryCodeEntry , phoneCountryCondeLabel, phoneNumberEntry, phoneNumberLabel) )
+            phoneNumberYes.place(relx=0.3,rely=0.45)
+            phoneNumberNo.place(relx=0.5,rely=0.45)
+            
+            #Phone entry label
+            phoneLabel=tk.Label(frame,text='Phone\nNumber')
+            phoneLabel.place(relx=0.05,rely=0.45)
+            
+            # Button to add the contact
+            confirmButton = tk.Button(frame, text='Add Contact!', width=25, command= lambda:  add_contact_in_book(nameEntry, surnameEntry, emailEntry, phoneNumberCountryCodeEntry, phoneNumberEntry, contactBook, root, radioSelectorValue))
+            confirmButton.place(relx=0.2,rely=0.9)
 
+                
 
-                    # Reset the delete functionality
-                    confirmButton.config(text="Delete Contact")
-                    confirmButtonWarning = False   
+        def Remove_Contact_Page():
+            '''
+            Function that manages the deletion oage of ta contact
+            '''
 
-            else :
-                label1 = tk.Label(root, text="Please enter name and surname")
-                label1.place(relx=0.3,rely=0.3)
-                label1.after(2000, label1.destroy)   
+            # Clear the frame from any widgets
+            for widget in frame.winfo_children():
+                widget.destroy()
 
-    def search_contact_page():
-        # Clear the frame from any widgets
-        for widget in frame.winfo_children():
-            widget.destroy()
+            # Warning to avoid accidental deletions
+            confirmButtonWarning = False
 
-        # Text that pops up at the end, declared here cause it's used multiple tiems
-        t = tk.Text(frame, wrap='word')
+            nameEntry = tk.Entry(frame)
+            nameEntry.place(relx=0.3,rely=0.15)
+            nameLabel=tk.Label(frame,text='Name')
+            nameLabel.place(relx=0.1,rely=0.15)
 
-        def search_name_page():
-            # Text box that will display the output, and hide it if it's present
-            # Just a small script to avoid showing the text field while trying to search another name
-            #for widget in frame.winfo_children():
-            #    if(str(widget)[0 : 13] == ".!frame.!text"):
-            #        widget.pack_forget()
-            t = tk.Text(frame, wrap='word')
+            surnameEntry = tk.Entry(frame)
+            surnameEntry.place(relx=0.3,rely=0.25)
+            surnameLabel=tk.Label(frame,text='Surname')
+            surnameLabel.place(relx=0.008,rely=0.25)
 
-            # Here add name and surname input field, do the search foe the one he looks for
-            # avoid putting genereric and speficic search
-            genericLabel=tk.Label(frame,text='You can search by name, surname,\nor both to be more precise ', name='toBeAnnihilated1')
-            genericLabel.place(relx=0.1, rely=0.2)
+            confirmButton = tk.Button(frame, text= "Delete Contact", width=25, command= lambda:  remove_contact_from_book(nameEntry, surnameEntry ))
+            confirmButton.place(relx=0.15, rely=0.45)
 
-            nameEntry = tk.Entry(frame, name='toBeAnnihilated2')
-            nameEntry.place(relx=0.3,rely=0.3)
-            nameLabel=tk.Label(frame,text='Name', name='toBeAnnihilated3')
-            nameLabel.place(relx=0.1,rely=0.3)
+            
+            def remove_contact_from_book(nameEntry, surnameEntry):
+                '''
+                THis function manages the deletion of the contact, the reason why it's not in the othe file pagesFunction 
+                is for the management of the confirmbuttonWarning
+                '''
+                # THis enables us to use the confirmButton variable
+                nonlocal confirmButtonWarning
 
-            surnameEntry = tk.Entry(frame, name='toBeAnnihilated4')
-            surnameEntry.place(relx=0.3,rely=0.4)
-            surnameLabel=tk.Label(frame,text='Surname', name='toBeAnnihilated5')
-            surnameLabel.place(relx=0.008,rely=0.4)
-
-
-            SearchButton = tk.Button(frame, text= "Search!", name='toBeAnnihilated6', width=15, command= lambda: search_name_function(nameEntry = nameEntry,surnameEntry = surnameEntry))
-            SearchButton.place(relx=0.3, rely=0.6)     
-
-
-            def search_name_function(nameEntry, surnameEntry):
-
-                # Get the values
+                # GEt the values from the tries
                 nameGet = nameEntry.get()
                 surnameGet = surnameEntry.get()
 
-                # Call the method that does the search
-                FoundContacts = contactBook.search_contact_by_name(nameGet, surnameGet)
+                if (nameGet and surnameGet):
 
-                # Hide the search elements
-                for widget in frame.winfo_children():
-                    if(str(widget)[0 : 23] == ".!frame.toBeAnnihilated"):
-                        widget.destroy()
-                
-                # Show the result fromt he search, if we have a iterate through it, else  show the string
-                if type (FoundContacts) == list:
-                    for c in FoundContacts:
-                        t.insert(tk.END, str(vars(c)) + "\n\n")
-                else : 
-                    t.insert(tk.END, str(FoundContacts) + "\n\n")
-                
-                # Show the result
-                t.pack()
+                    # If the entries are valid and the confirmWarning is not confirmed 
+                    # and the user to confirm it
+                    if not confirmButtonWarning:
+                        confirmButtonWarning = True
+                        confirmButton.config(text="I want to delete it!")
+                    
+                    else:
+                        removeContactResult = contactBook.remove_contact(nameGet,surnameGet)
+                        
+                        # Display the contact removed
+                        t = tk.Text(frame, wrap='word')
+                        t.insert(tk.END, str(removeContactResult))
+                        t.place(relx=0.01, rely=0.1)
+                        t.after(2000, t.destroy)
 
-        def search_phone_page():
-            
+
+                        # Reset the delete functionality
+                        confirmButton.config(text="Delete Contact")
+                        confirmButtonWarning = False   
+
+                else :
+                    # if the entries anre not valied tell the user
+                    label1 = tk.Label(root, text="Please enter name and surname")
+                    label1.place(relx=0.3,rely=0.3)
+                    label1.after(2000, label1.destroy)   
+
+        def search_contact_page():
+            '''
+            Page that manages the search of a contact
+            '''
+
+            # Clear the frame from any widgets
+            for widget in frame.winfo_children():
+                widget.destroy()
+
+            # Text that pops up at the end, declared here cause it's used multiple tiems
             t = tk.Text(frame, wrap='word')
-            # Here add name and surname input field, do the search foe the one he looks for
-            # avoid putting genereric and speficic search
-            genericLabel=tk.Label(frame,text='You can search by country code, number,\nor both to be more precise ', name='toBeAnnihilated1')
-            genericLabel.place(relx=0.1, rely=0.2)
-           
 
-            phoneNumberCountryCodeEntry = tk.Entry(frame, name='toBeAnnihilated2')
-            phoneNumberCountryCodeEntry.place(relx=0.3,rely=0.3)
+            def search_name_page():
+                '''
+                Function that manages the search of a contact by anme 
+                '''
 
-            phoneCountryCondeLabel=tk.Label(frame,text='Country\nCode', name='toBeAnnihilated3')
-            phoneCountryCondeLabel.place(relx=0.05,rely=0.3)
+                # Text box that will display the output of the search
+                t = tk.Text(frame, wrap='word')
 
-            phoneNumberEntry = tk.Entry(frame, name='toBeAnnihilated4')
-            phoneNumberEntry.place(relx=0.3,rely=0.4)
+                # Here add name and surname input field, do the search foe the one he looks for
+                # avoid putting genereric and speficic search
+                genericLabel=tk.Label(frame,text='You can search by name, surname,\nor both to be more precise ', name='toBeAnnihilated1')
+                genericLabel.place(relx=0.1, rely=0.2)
 
-            phoneNumberLabel=tk.Label(frame,text='Phone\nNumber', name='toBeAnnihilated5')
-            phoneNumberLabel.place(relx=0.05,rely=0.4)
+                # Name , surname and search button entries, and labels
+                nameEntry = tk.Entry(frame, name='toBeAnnihilated2')
+                nameEntry.place(relx=0.3,rely=0.3)
+                nameLabel=tk.Label(frame,text='Name', name='toBeAnnihilated3')
+                nameLabel.place(relx=0.1,rely=0.3)
 
-            SearchButton = tk.Button(frame, text= "Search!", name='toBeAnnihilated6', width=15, command= lambda: search_phone_function(phoneNumberCountryCodeEntry = phoneNumberCountryCodeEntry, phoneNumberEntry = phoneNumberEntry))
-            SearchButton.place(relx=0.3, rely=0.6)     
+                surnameEntry = tk.Entry(frame, name='toBeAnnihilated4')
+                surnameEntry.place(relx=0.3,rely=0.4)
+                surnameLabel=tk.Label(frame,text='Surname', name='toBeAnnihilated5')
+                surnameLabel.place(relx=0.008,rely=0.4)
 
 
-            def search_phone_function(phoneNumberCountryCodeEntry, phoneNumberEntry):
+                SearchButton = tk.Button(frame, text= "Search!", name='toBeAnnihilated6', width=15, command= lambda: search_name_function(nameEntry, surnameEntry,  contactBook, frame, t))
+                SearchButton.place(relx=0.3, rely=0.6)    
 
-                # Get the values
-                phoneNumberCountryCodeGet = phoneNumberCountryCodeEntry.get()
-                phoneNumberGet = phoneNumberEntry.get()
-
-                # Call the method that does the search
-                FoundContacts = contactBook.search_contact_by_phone(countryCode = phoneNumberCountryCodeGet, number= phoneNumberGet)
-
-                # Hide the search elements
-                for widget in frame.winfo_children():
-                    if(str(widget)[0 : 23] == ".!frame.toBeAnnihilated"):
-                        widget.destroy()
+            def search_phone_page():
+                '''
+                Function that enables the search contact by phone number
+                '''
                 
-                # Show the result fromt he search, if we have a iterate through it, else  show the string
-                if type (FoundContacts) == list:
-                    for c in FoundContacts:
-                        t.insert(tk.END, str(vars(c)) + "\n\n")
-                else : 
-                    t.insert(tk.END, str(FoundContacts) + "\n\n")
-                
-                # Show the result
+                t = tk.Text(frame, wrap='word')
+                # Here add name and surname input field, do the search foe the one he looks for
+                # avoid putting genereric and speficic search
+                genericLabel=tk.Label(frame,text='You can search by country code, number,\nor both to be more precise ', name='toBeAnnihilated1')
+                genericLabel.place(relx=0.1, rely=0.2)
+            
+                # Below all the entries and labes to get the phone number and country code
+                phoneNumberCountryCodeEntry = tk.Entry(frame, name='toBeAnnihilated2')
+                phoneNumberCountryCodeEntry.place(relx=0.3,rely=0.3)
+
+                phoneCountryCondeLabel=tk.Label(frame,text='Country\nCode', name='toBeAnnihilated3')
+                phoneCountryCondeLabel.place(relx=0.05,rely=0.3)
+
+                phoneNumberEntry = tk.Entry(frame, name='toBeAnnihilated4')
+                phoneNumberEntry.place(relx=0.3,rely=0.4)
+
+                phoneNumberLabel=tk.Label(frame,text='Phone\nNumber', name='toBeAnnihilated5')
+                phoneNumberLabel.place(relx=0.05,rely=0.4)
+
+                SearchButton = tk.Button(frame, text= "Search!", name='toBeAnnihilated6', width=15, command= lambda: search_phone_function(phoneNumberCountryCodeEntry , phoneNumberEntry , contactBook, frame, t))
+                SearchButton.place(relx=0.3, rely=0.6)    
+
+
+            # Buttons that let you decide what type of search to do either by phone or name
+            phoneSearchButton = tk.Button(frame, text= "Search by phone", width=15, command=search_phone_page )
+            phoneSearchButton.place(relx=0.01, rely=0.05)
+
+            nameSearchButton = tk.Button(frame, text= "Search by Name", width=15, command=search_name_page)
+            nameSearchButton.place(relx=0.55, rely=0.05)     
+    
+
+
+        def See_all_Contats_Page():
+            '''
+            Function hat will return all the contacts in the book
+            '''
+            # Clear the frame from any widgets
+            for widget in frame.winfo_children():
+                widget.destroy()
+            
+            # Call the book method that returns an array of contacts
+            contacts = contactBook.display_contactbook()
+
+            # Text that displays the contacts
+            t = tk.Text(frame,  wrap='word')
+            t.place(relx=0.35)
+            
+            if contacts:
+                # If there are contacts in the book loop though them to display them
+                for c in contacts:
+                    # All the extra code is making the display fancy
+                    t.insert(tk.END,"Name: " + str(c["name"]) + '\n' +
+                                    "Surname: " + str(c["surname"]) + '\n' +
+                                    "Phone Number: " + str(c["phoneNumber"]) + '\n' +
+                                    "Email: " + str(c["email"]) + '\n' +
+                                    "-------------------------------------"
+                                    )
+                # SHow the text box
                 t.pack()
 
-
-
-        # Buttons that let you decide what type of search to do
-        phoneSearchButton = tk.Button(frame, text= "Search by phone", width=15, command=search_phone_page )
-        phoneSearchButton.place(relx=0.01, rely=0.05)
-
-        nameSearchButton = tk.Button(frame, text= "Search by Name", width=15, command=search_name_page)
-        nameSearchButton.place(relx=0.55, rely=0.05)     
- 
-
-
-    def See_all_Contats_Page():
-        # Clear the frame from any widgets
-        for widget in frame.winfo_children():
-            widget.destroy()
-        
-        contacts = contactBook.display_contactbook()
-
-        t = tk.Text(frame,  wrap='word')
-        t.place(relx=0.35)
-        
-        if contacts:
-            
-            for c in contacts:
-                t.insert(tk.END, str(c) + '\n\n')            
-            t.pack()
-
-        else:
-            t.insert(tk.END, "The contact book is empty" + '\n\n')            
-            t.pack()
-            
-
-    def import_export_contact_page():
-        # Clear the frame from any widgets
-        for widget in frame.winfo_children():
-            widget.destroy()
-
-        # Check that the user is cd into the right folder:
-        
-             
-        exportContactsButton = tk.Button(frame, text='Export Contacts to cvs', width=25, command= lambda:  message("export"))
-        importContatcsButton = tk.Button(frame, text='Import Contacts from cvs', width=25, command= lambda:  message("import"))
-
-        importContatcsButton.place(relx=0.15,rely=0.1)
-        exportContactsButton.place(relx=0.15,rely=0.2)
-
-        def message(type):
-            
-            if type == "import":
-                label1 = tk.Label(frame, text="Are you sure?\nthis will revrite all current contats")
-                label1.place(relx=0.15,rely=0.4)
-                
-                confirmButton = tk.Button(frame, text='Confirm', width=25, command= lambda:  detroy_widgets_and_call_to_action(contactBook.import_all_contacts, "Contacts Imported!")) 
-                confirmButton.place(relx=0.15,rely=0.55)
+            else:
+                t.insert(tk.END, "The contact book is empty" + '\n\n')            
+                t.pack()
                 
 
-            if type == "export":
-                label1 = tk.Label(frame, text="Are you sure?\nthis will revrite all previusly saved contats")
-                label1.place(relx=0.15,rely=0.4)
+        def import_export_contact_page():
+            '''
+            Page for importing and exporting the contacts to cvs
+            Not required by helpfull for debuggin and testing
+            '''    
 
-                confirmButton = tk.Button(frame, text='Confirm', width=25, command= lambda:  detroy_widgets_and_call_to_action(contactBook.export_all_contacts, "Contacts Exported!"))
-                confirmButton.place(relx=0.15,rely=0.55) 
+            # Clear the frame from any widgets
+            for widget in frame.winfo_children():
+                widget.destroy()        
+            
+            # Buttons that enables the user to decide what to do
+            exportContactsButton = tk.Button(frame, text='Export Contacts to cvs', width=25, command= lambda:  message("export"))
+            importContatcsButton = tk.Button(frame, text='Import Contacts from cvs', width=25, command= lambda:  message("import"))
 
+            importContatcsButton.place(relx=0.2,rely=0.1)
+            exportContactsButton.place(relx=0.2,rely=0.2)
 
-            def detroy_widgets_and_call_to_action(function, text):
-                resultImportExport = function()
-                if not resultImportExport: 
-                    text = "Something went wrong\nCheck that the working directory is right\nOr that the file to read from exists"
-                label1.config(text=text)
-                confirmButton.destroy()
-                label1.after(2000, label1.destroy)
+            def message(type):
                 
+                if type == "import":
+                    label1 = tk.Label(frame, text="Are you sure?\nthis will revrite all current contats")
+                    label1.place(relx=0.2,rely=0.4)
+                    
+                    confirmButton = tk.Button(frame, text='Confirm', width=25, command= lambda:  detroy_widgets_and_call_to_action(contactBook.import_all_contacts, "Contacts Imported!", label1, confirmButton)) 
+                    confirmButton.place(relx=0.2,rely=0.55)
+                    
 
+                if type == "export":
+                    label1 = tk.Label(frame, text="Are you sure?\nthis will revrite all previusly saved contats")
+                    label1.place(relx=0.2,rely=0.4)
 
-    AddContactButton = tk.Button(root, text='Add Contact', width=25, command=Add_Collection_page)
-    RemoveContactButton = tk.Button(root, text='Remove Contact', width=25,command=Remove_Contact_Page)
-    SearchContactButton = tk.Button(root, text='Search Contact', width=25,command=search_contact_page)
+                    confirmButton = tk.Button(frame, text='Confirm', width=25, command= lambda:  detroy_widgets_and_call_to_action(contactBook.export_all_contacts, "Contacts Exported!", label1, confirmButton))
+                    confirmButton.place(relx=0.2,rely=0.55) 
 
-    SeeAllContactButton = tk.Button(root, text='See all Contacts', width=25,command=See_all_Contats_Page)
-    importExportContctsButton = tk.Button(root, text='Import / Export Contacts', width=25,command=import_export_contact_page)
-    StopButton = tk.Button(root, text='Stop', width=25, command=root.destroy)
+                    
+
+        # Main page buttons (position on the root frame)
+        AddContactButton = tk.Button(root, text='Add Contact', width=25, command=Add_Contact_page)
+        RemoveContactButton = tk.Button(root, text='Remove Contact', width=25,command=Remove_Contact_Page)
+        SearchContactButton = tk.Button(root, text='Search Contact', width=25,command=search_contact_page)
+
+        SeeAllContactButton = tk.Button(root, text='See all Contacts', width=25,command=See_all_Contats_Page)
+        importExportContctsButton = tk.Button(root, text='Import / Export Contacts', width=25,command=import_export_contact_page)
+        StopButton = tk.Button(root, text='Stop', width=25, command=root.destroy)
+        
+        AddContactButton.pack()
+        RemoveContactButton.pack()
+        SearchContactButton.pack()
+        SeeAllContactButton.pack()
+        importExportContctsButton.pack()
+        StopButton.pack()
+
+        # call the root to actually display and make the graphics work
+        root.mainloop()
     
-    AddContactButton.pack()
-    RemoveContactButton.pack()
-    SearchContactButton.pack()
-    SeeAllContactButton.pack()
-    importExportContctsButton.pack()
-    StopButton.pack()
-
-    root.mainloop()
+    except Exception as error:
+        print("Something went wrong!")
+        print(error)
 
 
-    # Adding a contact
-
-    #contactBook.add_contact()
-    #contactBook.add_contact()
-    #contactBook.add_contact()
-    #contactBook.search_contact_by_name()
-    
-    #contactBook.add_contact()
-
-    #contactBook.remove_contact()
-
-    #contactBook.display_contactbook()
-
+# Small function that enables the user to become invincible for 5 minutes
+# Nintendo stole the idea when making the star in super mario
+# If you read all the comments up to here, hope the last one made you jiggle
 if __name__ == "__main__":
     main()
 

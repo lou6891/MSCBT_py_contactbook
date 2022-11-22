@@ -13,6 +13,12 @@ class ContactBook:
         pass
     
     def add_contact(self, name, surname, email=None, phoneNumber= None):
+        '''
+        Method that add a contact, 
+        
+        Output:
+        -> String of text to be displayed
+        '''
         
         # Check that name and surname are valid options
         if len(name) == 0 or len(surname) == 0 : 
@@ -40,13 +46,20 @@ class ContactBook:
             return ("The contact already exists")
         
         else :
+            # If everything is good add create a contact and add it to the book
             new_contact = Contact(name = name, surname=surname, email=email if len(email) > 0 else None, phoneNumber= phoneNumber if len(phoneNumber) > 1 else None)
             self.contacts.append(new_contact)
 
             return "Contat added"
 
     def display_contactbook(self):
-
+        '''
+        Method that returns all the contacts in the book, 
+        
+        Output:
+        -> The array with the contact
+        -> False
+        '''
         returnArr = []
 
         if(len(self.contacts) > 0):
@@ -60,6 +73,14 @@ class ContactBook:
         return returnArr
 
     def remove_contact(self, name, surname):
+        '''
+        Method that removes a contact from the book book, 
+        
+        Output:
+        -> String of text to be displayed
+        -> String of text to be displayed and the contact
+        -> False
+        '''
                         
         if len(name) == 0 or len(surname) == 0 : print("Name and surname must be valid"); return False;
 
@@ -71,6 +92,16 @@ class ContactBook:
             return("No such contact found")
 
     def import_all_contacts(self):
+        '''
+        Method that imports the contacts to csv
+        Possible imporvement chose if to add the contacts to the book 
+        or delete what is present (current version)
+        
+        Output:
+        -> True
+        -> False
+        '''
+
         try:
             # Clear any existing contact
             self.contacts = []
@@ -103,8 +134,19 @@ class ContactBook:
             return False
     
     def export_all_contacts(self):
-        try:
+        '''
+        Method that exports the contacts to csv
+        Possible imporvement chose if to add the contacts to the cvs 
+        or delete what is present (current version)
+        
+        Output:
+        -> True
+        -> False
+        '''
 
+        try:
+            # Create an header with the fiels of the contact class 
+            # (for easy of coding I just wrote them)
             header = self.contactField
             
             with open(self.nameCSVfile, "w", newline='') as file:
@@ -112,7 +154,7 @@ class ContactBook:
 
                 # write the header
                 writer.writerow(header)
-
+                # For each contact in the book write a row
                 for contact in self.contacts:
                     writer.writerow(contact.display_contact())
 
@@ -124,6 +166,16 @@ class ContactBook:
             return False
 
     def search_contact_by_name(self, nameSearched, surnameSearched):
+        '''
+        Works the same as search by phone
+        This method takes 2 inputs.
+        Depending on the inputs it will filter and call the relative fucntion with the right parameters
+        this will retrieve the contact/s
+        
+        Output:
+        -> Either 1 specific contact
+        - > Multiple contacts
+        '''
         
         # Data cleaning and transormation for capitl letter tht might interfer
         nameSearched = nameSearched.strip().lower()
@@ -148,6 +200,17 @@ class ContactBook:
             return "Something went wrong!\nCheck that the entries are valid"
 
     def search_contact_by_phone(self, countryCode, number):
+        '''
+        Works the same as search by name
+
+        This method takes 2 inputs.
+        Depending on the inputs it will filter and call the relative fucntion with the right parameters
+        this will retrieve the contact/s
+
+        Output:
+        -> Either 1 specific contact
+        - > Multiple contacts
+        '''
             
         # Data cleaning and transormation for capitl letter tht might interfer
         countryCode = countryCode.strip().lower()
@@ -170,122 +233,3 @@ class ContactBook:
 
         else:
             return "Something went wrong!\nCheck that the entries are valid"
-
-         
-                 
-            
-
-            
-
-        
-        
-
-
-
-
-'''
-    def add_contact(self):
-        print("\n")
-        print("Define the new contact")
-        name = input("Add the name of the contact (mandatory): ")
-        surname = input("Add the surname of the contact (mandatory): ")
-
-        # check that the input exists and is valid, else end the program
-        if len(name) == 0 or len(surname) == 0 : print("Name and surname must be valid"); return False;
-        
-        # Check if the contact already exsits
-        isExistant = addFunctions.specificSearchProgram(name.strip() + surname.strip(), self.contacts)
-        
-        if(isExistant != None): 
-            print("The contact already exists")
-            print(vars(isExistant))
-            
-            # if it exists ask if you want to modify it
-            modifyIt = input("Do you want to modify the existing contact (Yes = Yes, No = any other input): ")
-            if len(modifyIt) > 0 and modifyIt[0].upper() == "Y":
-                # To be finished
-                pass
-
-            return False;
-            
-
-
-        nickName = input("Add the nickname of the contact (to skip press enter): ")
-        phoneNumber = addFunctions.AddPhoneNumber()
-
-        email = input("Do you want to add an email address?  (to skip press enter): ")
-
-        print("\n")
-
-        new_contact = Contact(name, surname, nickName, phoneNumber, email)
-        self.contacts.append(new_contact)
-        
-        print(vars(self.contacts[0]))
-
-
-    def remove_contact(self):
-        print("\n")
-        
-        warning = input("This program deletes a contact, do you want to procede? (Yes = Yes, No = any other input): ")
-        
-        if len(warning) > 0 and warning[0].upper() == "Y":
-                
-            name = input("Add the name of the contact (mandatory): ")
-            surname = input("Add the surname of the contact (mandatory): ")
-            if len(name) == 0 or len(surname) == 0 : print("Name and surname must be valid"); return False;
-
-            for contact in self.contacts:
-                if (contact.name.lower() == name.lower() and contact.surname.lower() == surname.lower()):
-                    self.contacts.remove(contact)
-                    print("contact removed: \n", vars(contact))
-                    print("\n")
-                    return True
-            else:
-                print("No such contact found")
-                print("\n")
-                return False
-        
-        else:
-            return False
-
-    
-    def search_contact_by_name(self):
-
-        while True:
-            print("\n")
-            searchType = input("Do whant to a generic search or specific one? \n" +
-            "(G = generic, S = specific  or Q to exit): ")
-
-            if len(searchType) > 0 :
-                if( searchType[0].upper() == "Q"):
-                    return False;
-                elif(searchType[0].upper() == "G" ):
-                    a = "l"
-                    b = "name"
-                    test = addFunctions.genericaSearchProgram(a, b, self.contacts)
-                    test2 = list(vars(i) for i in test)
-                    print(test2)
-                    return
-                elif(searchType[0].upper() == "S" ):
-                    # specific search
-                    pass
-                else:
-                    print("Something went wrong, let's retry")
-            
-        pass
-
-    def search_contact_by_phone_number(self, phone_number):
-        pass
-
-
-    def display_contactbook(self):
-        print("\n")
-        print("Printing all contacts in the contact book: ")
-
-        if(len(self.contacts) > 0):
-            for contact in self.contacts:
-                print(vars(contact))
-        else:
-            print("The contact book is empty")
-        print("\n")
-        '''
