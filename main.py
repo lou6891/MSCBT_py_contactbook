@@ -312,9 +312,6 @@ def main():
         print(error)
 
 
-# Small function that enables the user to become invincible for 5 minutes
-# Nintendo stole the idea when making the star in super mario
-# If you read all the comments up to here, hope the last one made you jiggle
 if __name__ == "__main__":
     main()
 
