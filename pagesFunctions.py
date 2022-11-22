@@ -77,7 +77,13 @@ def search_name_function(nameEntry, surnameEntry, contactBook, frame, t):
     # Show the result fromt he search, if we have a iterate through it, else  show the string
     if type (FoundContacts) == list:
         for c in FoundContacts:
-            t.insert(tk.END, str(vars(c)) + "\n\n")
+            c = vars(c)
+            t.insert(tk.END,"Name: " + str(c["name"]) + '\n' +
+                                    "Surname: " + str(c["surname"]) + '\n' +
+                                    "Phone Number: " + str(c["phoneNumber"]) + '\n' +
+                                    "Email: " + str(c["email"]) + '\n' +
+                                    "-------------------------------------"
+                                    )
     else : 
         t.insert(tk.END, str(FoundContacts) + "\n\n")
     
@@ -106,7 +112,13 @@ def search_phone_function(phoneNumberCountryCodeEntry, phoneNumberEntry, contact
     # Show the result fromt he search, if we have a iterate through it, else  show the string
     if type (FoundContacts) == list:
         for c in FoundContacts:
-            t.insert(tk.END, str(vars(c)) + "\n\n")
+            c = vars(c)
+            t.insert(tk.END,"Name: " + str(c["name"]) + '\n' +
+                                    "Surname: " + str(c["surname"]) + '\n' +
+                                    "Phone Number: " + str(c["phoneNumber"]) + '\n' +
+                                    "Email: " + str(c["email"]) + '\n' +
+                                    "-------------------------------------"
+                                    )
     else : 
         t.insert(tk.END, str(FoundContacts) + "\n\n")
     

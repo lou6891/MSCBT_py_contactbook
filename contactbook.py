@@ -87,7 +87,7 @@ class ContactBook:
         for contact in self.contacts:
             if (contact.name.lower() == name.lower() and contact.surname.lower() == surname.lower()):
                 self.contacts.remove(contact)
-                return "Contact Removed", contact
+                return "Contact Removed", vars(contact)
         else:
             return("No such contact found")
 
