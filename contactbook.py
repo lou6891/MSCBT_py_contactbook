@@ -77,7 +77,6 @@ class ContactBook:
         Method that removes a contact from the book book, 
         
         Output:
-        -> String of text to be displayed
         -> String of text to be displayed and the contact
         -> False
         '''
@@ -89,7 +88,7 @@ class ContactBook:
                 self.contacts.remove(contact)
                 return "Contact Removed", vars(contact)
         else:
-            return("No such contact found")
+            return False
 
     def import_all_contacts(self):
         '''

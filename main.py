@@ -123,11 +123,14 @@ def main():
                         remConRes = contactBook.remove_contact(nameGet,surnameGet)
                         # Display the contact removed
                         t = tk.Text(frame, wrap='word')
-                        t.insert(tk.END,"Name: " + str(remConRes[1]["name"]) + '\n' +
-                                    "Surname: " + str(remConRes[1]["surname"]) + '\n' +
-                                    "Phone Number: " + str(remConRes[1]["phoneNumber"]) + '\n' +
-                                    "Email: " + str(remConRes[1]["email"]) + '\n'
-                                    )
+                        if remConRes:
+                            t.insert(tk.END,"Name: " + str(remConRes[1]["name"]) + '\n' +
+                                        "Surname: " + str(remConRes[1]["surname"]) + '\n' +
+                                        "Phone Number: " + str(remConRes[1]["phoneNumber"]) + '\n' +
+                                        "Email: " + str(remConRes[1]["email"]) + '\n'
+                                        )
+                        else:
+                            t.insert(tk.END,"No such contact found" )
                         t.place(relx=0.01, rely=0.1)
                         t.after(2000, t.destroy)
 
